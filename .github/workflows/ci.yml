@@ -31,10 +31,10 @@ jobs:
           repository: ente-io/ente
           ref: main
           token: ${{ github.token }}
-      - name: Setup bun
-        uses: oven-sh/setup-bun@v2
+      - name: Set Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: latest
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
@@ -42,10 +42,17 @@ jobs:
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
           restore-keys: |
             ${{ runner.os }}-bun-
-      - name: Install dependencies
-        run: bun install
-      - name: Build
-        run: bun run build:accounts
+      - name: Run install
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: install
+      - name: Build production bundle
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: build:accounts
+        env:
+          ENV NEXT_PUBLIC_ENTE_ENDPOINT: https://ente.meysam.io
+          NEXT_PUBLIC_ENTE_ALBUMS_ENDPOINT: https://photos.meysam.io
       - name: Upload artifact
         id: upload-artifact
         uses: actions/upload-artifact@v4
