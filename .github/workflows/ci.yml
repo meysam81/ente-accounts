@@ -21,9 +21,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,7 +35,7 @@ jobs:
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: web/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -60,13 +57,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{ github.ref_name }}
-          path: dist
+          path: web/apps/accounts/out
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: web/apps/accounts/out
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
